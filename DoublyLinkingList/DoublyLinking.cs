@@ -13,7 +13,7 @@ namespace DoublyLinkingListLibrary
         internal DoublyLinking(T value)
         {
             PreviousLinq = null;
-            Value = value != null ? value : default(T);
+            Value = value;
             NextLinq = null;
         }
     }

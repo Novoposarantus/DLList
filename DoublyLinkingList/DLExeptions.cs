@@ -8,8 +8,8 @@ namespace DoublyLinkingListLibrary
         public DeleteNullExeption() : base("Error. Try to Delete Null Current.") { }
     }
     [Serializable()]
-    public class NullGoExeption : Exception
+    public class MoveExeption : Exception
     {
-        public NullGoExeption() : base("Error. Try go to Null.") { }
+        public MoveExeption() : base("Error. Try go to Null.") { }
     }
 }

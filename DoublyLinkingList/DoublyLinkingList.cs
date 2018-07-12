@@ -14,9 +14,11 @@ namespace DoublyLinkingListLibrary
 
         public DoublyLinkingList(params T[] value)
         {
-            Length = value.Length > 0 ? 1 : 0;
-            head = current = end = value.Length > 0 ? new DoublyLinking<T>(value[0]) : null;
-            for (int i = 1; i < value.Length; ++i)
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            for (int i = 0; i < value.Length; ++i)
             {
                 AddToEnd(value[i]);
             }
@@ -25,18 +27,15 @@ namespace DoublyLinkingListLibrary
         public T this[int index]
         {
             get
-            {
+            {   
+                if (index > Length - 1 || index < 0)
+                {
+                    throw new IndexOutOfRangeException("Error.Index out of Range.");
+                }
                 var buffer = head;
                 for (var i = 0; i < index; ++i)
                 {
-                    try
-                    {
                         buffer = buffer.NextLinq;
-                    }
-                    catch (NullReferenceException)
-                    {
-                        throw new IndexOutOfRangeException("Error.Index out of Range.");
-                    }
                 }
                 return buffer.Value;
             }
@@ -60,14 +59,7 @@ namespace DoublyLinkingListLibrary
         }
         public void AddBeforeSelected(T value)
         {
-            if (current != head)
-            {
                 Add(new DoublyLinking<T>(value), current);
-            }
-            else
-            {
-                Add(new DoublyLinking<T>(value), head);
-            }
         }
         void Add(DoublyLinking<T> node, DoublyLinking<T> selected, bool isnEnd = true)
         {
@@ -104,13 +96,14 @@ namespace DoublyLinkingListLibrary
             {
                 throw new DeleteNullExeption();
             }
+
             if (Length == 1)
             {
                 end = head = current = null;
                 --Length;
                 return;
-
             }
+
             DoublyLinking<T> buffer = null;
             if (current == head)
             {
@@ -138,7 +131,7 @@ namespace DoublyLinkingListLibrary
                 }
                 catch (NullReferenceException)
                 {
-                    throw new NullGoExeption();
+                    throw new MoveExeption();
                 }
             }
             --Length;
@@ -147,15 +140,12 @@ namespace DoublyLinkingListLibrary
         public void ChangeCurrent(int count = 1)
         {
             for (var i = 0; i < Math.Abs(count); ++i)
-            { 
-                try
-                {
-                    current = count > 0 ? current.NextLinq : current.PreviousLinq;
+            {
+                if (current == null) {
+                    throw new MoveExeption();
                 }
-                catch (NullReferenceException)
-                {
-                    throw new NullGoExeption();
-                }
+                //Заменить на делегат
+                current = count > 0 ? current.NextLinq : current.PreviousLinq;
             }
         }
         public IEnumerable<T> AsEnumerable(bool reverse)

@@ -70,16 +70,16 @@ namespace TestDoublyLinking
             Assert.AreEqual(3, dlLits.Current);
         }
         [TestMethod]
-        [ExpectedException(typeof(NullGoExeption),
-                "Error. Try go to Null.")]
+        [ExpectedException(typeof(MoveExeption),
+                "Error. Go to Null.")]
         public void TestGoBackOutOfRange()
         {
             var dlLits = AddDlList(5);
             dlLits.ChangeCurrent(-2);
         }
         [TestMethod]
-        [ExpectedException(typeof(NullGoExeption),
-                "Error. Try go to Null.")]
+        [ExpectedException(typeof(MoveExeption),
+                "Error. Go to Null.")]
         public void TestGoForwardOutOfRange()
         {
             var dlLits = AddDlList(5);
@@ -208,7 +208,7 @@ namespace TestDoublyLinking
         }
         [TestMethod]
         [ExpectedException(typeof(DeleteNullExeption),
-                "Error. Try to Delete Null Current.")]
+                "Error. Null current deleted")]
         public void TestNullDelite()
         {
             var dlList = new DoublyLinkingList<int>();
@@ -216,11 +216,27 @@ namespace TestDoublyLinking
         }
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException),
-                "Error.Index out of Range.")]
+                "Error.Index in Range.")]
         public void TestIndexOutOfRange()
         {
             var dlList = new DoublyLinkingList<int>();
             var dl = dlList[100];
+        }
+        [TestMethod]
+        public void TestIndexer()
+        {
+            var dlList = new DoublyLinkingList<int>(1, 2, 3, 4, 5);
+            for (var i = 0; i < dlList.Length; ++i)
+            {
+                Assert.AreEqual(i+1, dlList[i]);
+            }
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void TestNullContructor()
+        {
+            var dlList = new DoublyLinkingList<int>(null);
+
         }
     }
 }
