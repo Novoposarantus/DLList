@@ -11,7 +11,6 @@ namespace DoublyLinkingListLibrary
         internal DoublyLinking<T> current;
         internal DoublyLinking<T> end;
         public int Length { get; private set; }
-        internal delegate DoublyLinking<T> GetLinqDelegate();
 
         public DoublyLinkingList(params T[] value)
         {
@@ -98,10 +97,10 @@ namespace DoublyLinkingListLibrary
                 throw new DeleteNullExeption();
             }
 
+            --Length;
             if (Length == 1)
             {
                 end = head = current = null;
-                --Length;
                 return;
             }
 
@@ -121,9 +120,6 @@ namespace DoublyLinkingListLibrary
                 current.PreviousLinq.NextLinq = current.NextLinq;
                 current.NextLinq.PreviousLinq = current.PreviousLinq;
             }
-            current.NextLinq = null;
-            current.PreviousLinq = null;
-            --Length;
             current = buffer;
         }
         public int GetIndexOfCurrent()
@@ -148,18 +144,9 @@ namespace DoublyLinkingListLibrary
             {
                 throw new MoveExeption();
             }
-
             DoublyLinking<T> GetNextLinq() => current.NextLinq;
             DoublyLinking<T> GetPreviousLinq() => current.PreviousLinq;
-            GetLinqDelegate getLinq;
-            if (count > 0)
-            {
-                getLinq = GetNextLinq;
-            }
-            else
-            {
-                getLinq = GetPreviousLinq;
-            }
+            Func<DoublyLinking<T>> getLinq = count > 0 ? (Func<DoublyLinking<T>>)GetNextLinq : GetPreviousLinq;
             for (var i = 0; i < Math.Abs(count); ++i)
             {
                 current = getLinq();
