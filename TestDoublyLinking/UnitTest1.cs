@@ -8,15 +8,6 @@ namespace TestDoublyLinking
     [TestClass]
     public class UnitTest1
     {
-        private DoublyLinkingList<int> AddDlList(int length)
-        {
-            var dlLits = new DoublyLinkingList<int>(0);
-            for (var i = 1; i < length; ++i)
-            {
-                dlLits.AddToEnd(i);
-            }
-            return dlLits;
-        }
         [TestMethod]
         public void TestCreateNewList()
         {
@@ -42,21 +33,21 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestGoForwardForThreeSteps()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0,1,2,3,4);
             dlLits.ChangeCurrent(3);
             Assert.AreEqual(3, dlLits.Current);
         }
         [TestMethod]
         public void TestGoForwardForOneStep()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.ChangeCurrent();
             Assert.AreEqual(1, dlLits.Current);
         }
         [TestMethod]
         public void TestGoBackForThreeSteps()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.GoToEnd();
             dlLits.ChangeCurrent(-3);
             Assert.AreEqual(1, dlLits.Current);
@@ -64,7 +55,7 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestGoBackForOneStep()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.GoToEnd();
             dlLits.ChangeCurrent(-1);
             Assert.AreEqual(3, dlLits.Current);
@@ -74,7 +65,7 @@ namespace TestDoublyLinking
                 "Error. Go to Null.")]
         public void TestGoBackOutOfRange()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.ChangeCurrent(-2);
         }
         [TestMethod]
@@ -82,34 +73,34 @@ namespace TestDoublyLinking
                 "Error. Go to Null.")]
         public void TestGoForwardOutOfRange()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.GoToEnd();
             dlLits.ChangeCurrent(2);
         }
         [TestMethod]
         public void TestGetLength()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             Assert.AreEqual(5, dlLits.Length);
         }
         [TestMethod]
         public void TestGoToEnd()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.GoToEnd();
             Assert.AreEqual(4, dlLits.Current);
         }
         [TestMethod]
         public void TestGoToHead()
         {
-            var dlLits = AddDlList(5);
+            var dlLits = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlLits.GoToHead();
             Assert.AreEqual(0, dlLits.Current);
         }
         [TestMethod]
         public void TestAddBeforeSelected()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlList.ChangeCurrent(2);
             dlList.AddBeforeSelected(6);
             Assert.AreEqual(6, dlList[2]);
@@ -132,14 +123,14 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestDeleteHead()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlList.DeleteCurrent();
             Assert.AreEqual(1, dlList[0]);
         }
         [TestMethod]
         public void TestDeleteEnd()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlList.GoToEnd();
             dlList.DeleteCurrent();
             Assert.AreEqual(3, dlList[dlList.Length - 1]);
@@ -147,7 +138,7 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestDeleteSelected()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             dlList.ChangeCurrent(2);
             dlList.DeleteCurrent();
             Assert.AreEqual(3, dlList[2]);
@@ -162,7 +153,7 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestForEachAll()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             int i = 0;
             foreach (var value in dlList.AsEnumerable(false))
             {
@@ -173,7 +164,7 @@ namespace TestDoublyLinking
         [TestMethod]
         public void TestForEachAllReverse()
         {
-            var dlList = AddDlList(5);
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
             int i = dlList.Length;
             foreach (var value in dlList.AsEnumerable(true))
             {
@@ -228,7 +219,7 @@ namespace TestDoublyLinking
             var dlList = new DoublyLinkingList<int>(1, 2, 3, 4, 5);
             for (var i = 0; i < dlList.Length; ++i)
             {
-                Assert.AreEqual(i+1, dlList[i]);
+                Assert.AreEqual(i + 1, dlList[i]);
             }
         }
         [TestMethod]
@@ -237,6 +228,28 @@ namespace TestDoublyLinking
         {
             var dlList = new DoublyLinkingList<int>(null);
 
+        }
+        [TestMethod]
+        public void TestGetIndexOfCurrent()
+        {
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
+            Assert.AreEqual(0, dlList.GetIndexOfCurrent());
+            dlList.ChangeCurrent(2);
+            Assert.AreEqual(2, dlList.GetIndexOfCurrent());
+        }
+        [TestMethod]
+        [ExpectedException(typeof(MoveExeption))]
+        public void TestChangeCurrentToNegative()
+        {
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
+            dlList.ChangeCurrent(-1);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(MoveExeption))]
+        public void TestChangeCurrentToOutOfLength()
+        {
+            var dlList = new DoublyLinkingList<int>(0, 1, 2, 3, 4);
+            dlList.ChangeCurrent(5);
         }
     }
 }

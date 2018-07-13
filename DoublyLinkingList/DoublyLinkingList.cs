@@ -11,6 +11,7 @@ namespace DoublyLinkingListLibrary
         internal DoublyLinking<T> current;
         internal DoublyLinking<T> end;
         public int Length { get; private set; }
+        internal delegate DoublyLinking<T> GetLinqDelegate();
 
         public DoublyLinkingList(params T[] value)
         {
@@ -59,7 +60,7 @@ namespace DoublyLinkingListLibrary
         }
         public void AddBeforeSelected(T value)
         {
-                Add(new DoublyLinking<T>(value), current);
+            Add(new DoublyLinking<T>(value), current);
         }
         void Add(DoublyLinking<T> node, DoublyLinking<T> selected, bool isnEnd = true)
         {
@@ -104,48 +105,64 @@ namespace DoublyLinkingListLibrary
                 return;
             }
 
+
             DoublyLinking<T> buffer = null;
+            buffer = current == head ? current.NextLinq : current.PreviousLinq;
             if (current == head)
             {
-                buffer = current.NextLinq;
                 head = current.NextLinq;
-                head.PreviousLinq = null;
-                current.NextLinq = null;
             }
             else if (current == end)
             {
-                buffer = current.PreviousLinq;
                 end = current.PreviousLinq;
-                end.NextLinq = null;
-                current.PreviousLinq = null;
             }
             else
             {
-                try
-                {
-                    buffer = current.PreviousLinq;
-                    current.PreviousLinq.NextLinq = current.NextLinq;
-                    current.NextLinq.PreviousLinq = current.PreviousLinq;
-                    current.NextLinq = null;
-                    current.PreviousLinq = null;
-                }
-                catch (NullReferenceException)
-                {
-                    throw new MoveExeption();
-                }
+                current.PreviousLinq.NextLinq = current.NextLinq;
+                current.NextLinq.PreviousLinq = current.PreviousLinq;
             }
+            current.NextLinq = null;
+            current.PreviousLinq = null;
             --Length;
             current = buffer;
         }
+        public int GetIndexOfCurrent()
+        {
+            var buffer = head;
+            var index = 0;
+            while (buffer != current)
+            {
+                buffer = buffer.NextLinq;
+                ++index;
+            }
+            return index;
+        }
         public void ChangeCurrent(int count = 1)
         {
+            if (count == 0)
+            {
+                return;
+            }
+            int indexOfCurrentAfterChange = GetIndexOfCurrent() + count;
+            if ((indexOfCurrentAfterChange < 0) || (indexOfCurrentAfterChange > Length - 1))
+            {
+                throw new MoveExeption();
+            }
+
+            DoublyLinking<T> GetNextLinq() => current.NextLinq;
+            DoublyLinking<T> GetPreviousLinq() => current.PreviousLinq;
+            GetLinqDelegate getLinq;
+            if (count > 0)
+            {
+                getLinq = GetNextLinq;
+            }
+            else
+            {
+                getLinq = GetPreviousLinq;
+            }
             for (var i = 0; i < Math.Abs(count); ++i)
             {
-                if (current == null) {
-                    throw new MoveExeption();
-                }
-                //Заменить на делегат
-                current = count > 0 ? current.NextLinq : current.PreviousLinq;
+                current = getLinq();
             }
         }
         public IEnumerable<T> AsEnumerable(bool reverse)
